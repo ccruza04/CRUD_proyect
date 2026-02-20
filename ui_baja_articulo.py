@@ -1,5 +1,4 @@
-from PyQt6.QtCore import Qt
-from PyQt6.QtGui import QStringListModel
+from PyQt6.QtCore import Qt, QStringListModel
 from PyQt6.QtWidgets import QWidget, QVBoxLayout, QFrame, QFormLayout, QMessageBox, QStackedWidget, QHBoxLayout, QCompleter
 
 from ui_components import LabelTitulo, LabelItem, EditItem, TextItem, BotonAction, aplicar_candado
