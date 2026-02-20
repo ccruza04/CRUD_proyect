@@ -1,6 +1,6 @@
 import sys
 
-from PyQt6.QtWidgets import QWidget, QApplication, QVBoxLayout, QHBoxLayout, QStackedWidget, QLabel
+from PyQt6.QtWidgets import QWidget, QApplication, QVBoxLayout, QHBoxLayout, QStackedWidget, QLabel, QStyleFactory
 
 from articulos_dao import ArticulosDao
 from ui_components import BotonMenu
@@ -20,6 +20,12 @@ class ArticulosApp(QWidget):
     def config_ui(self) -> None:
         self.setWindowTitle("Gestión de Artículos")
         self.resize(800, 550)
+        self.setStyleSheet("""
+            QWidget {
+                color: #111111;
+                background-color: #f0f0f0;
+            }
+        """)
 
         layout = QVBoxLayout(self)
         layout.setContentsMargins(0, 0, 0, 0)
@@ -27,16 +33,16 @@ class ArticulosApp(QWidget):
 
         self.panel_menu = QWidget(self)
         layout.addWidget(self.panel_menu)
-        self.panel_menu.setStyleSheet("background-color: #AA0000;")
+        self.panel_menu.setStyleSheet("background-color: #e1e1e1;")
         self.panel_menu.setFixedHeight(50)
 
         self.panel_central = QStackedWidget(self)
         layout.addWidget(self.panel_central)
-        self.panel_central.setStyleSheet("background-color: #e8ffff;")
+        self.panel_central.setStyleSheet("background-color: #f7f7f7; color: #111111;")
 
         self.panel_status = QLabel("Aplicación iniciada")
         layout.addWidget(self.panel_status)
-        self.panel_status.setStyleSheet("background-color: #00AA00; color: #ffffff; padding: 8px;")
+        self.panel_status.setStyleSheet("background-color: #d6e3f3; color: #111111; padding: 8px;")
 
         self.crear_menu()
 
@@ -102,6 +108,7 @@ class ArticulosApp(QWidget):
 
 if __name__ == "__main__":
     app = QApplication(sys.argv)
+    app.setStyle(QStyleFactory.create("Windows"))
     ventana = ArticulosApp()
     ventana.show()
     sys.exit(app.exec())

@@ -5,52 +5,54 @@ class BotonMenu(QPushButton):
     def __init__(self, text="", parent=None):
         super().__init__(text, parent)
         self.setStyleSheet("""
-                        QPushButton {
-                            background-color: #00AA00;
-                            border: 1px solid #444;
-                            padding: 5px;
-                            border-radius: 5px;
-                        }
-                        QPushButton:pressed {
-                            background-color: #33CC33;
-                            font-weight: bold;
-                            border-bottom: 2px solid #000000;
-                        }
-                        QPushButton:hover {
-                            font-weight: bold;
-                            border-color: #20b2aa;
-                        }
-                """)
+            QPushButton {
+                background-color: #f3f3f3;
+                color: #111111;
+                border: 1px solid #a0a0a0;
+                padding: 6px 10px;
+                border-radius: 3px;
+            }
+            QPushButton:hover {
+                background-color: #e8e8e8;
+            }
+            QPushButton:pressed {
+                background-color: #dcdcdc;
+                border: 1px solid #7e7e7e;
+            }
+        """)
 
 
 class BotonAction(QPushButton):
     def __init__(self, text="", parent=None):
         super().__init__(text, parent)
         self.setStyleSheet("""
-                        QPushButton {
-                            background-color: #ba55d3;
-                            border: 1px solid #444;
-                            padding: 5px;
-                            border-radius: 5px;
-                        }
-                        QPushButton:hover {
-                            color: #c71585;
-                            font-weight: bold;
-                            border-color: #c71585;
-                        }
-                """)
+            QPushButton {
+                background-color: #e9eef7;
+                color: #111111;
+                border: 1px solid #8ea9d3;
+                padding: 6px 10px;
+                border-radius: 3px;
+            }
+            QPushButton:hover {
+                background-color: #dce7f8;
+            }
+            QPushButton:pressed {
+                background-color: #cfdcf3;
+                border: 1px solid #7b96c3;
+            }
+        """)
 
 
 class LabelItem(QLabel):
     def __init__(self, text="", parent=None):
         super().__init__(text, parent)
-        self.setStyleSheet("font-weight:bold; color:#0000BB;")
+        self.setStyleSheet("font-weight:600; color:#111111;")
 
 
 class LabelTitulo(QLabel):
     def __init__(self, text="", parent=None):
         super().__init__(text, parent)
-        self.setStyleSheet("font-weight:bold; color:#BB0000; font-size:14px;")
+        self.setStyleSheet("font-weight:700; color:#111111; font-size:14px;")
 
 
 class EditItem(QLineEdit):
@@ -60,17 +62,13 @@ class EditItem(QLineEdit):
         self.setStyleSheet("""
             QLineEdit {
                 background-color: #ffffff;
-                border: 1px solid #444;
+                color: #111111;
+                border: 1px solid #9e9e9e;
                 padding: 5px;
-                border-radius: 5px;
+                border-radius: 2px;
             }
-
-            QLineEdit:hover {
-                border: 1px solid #20b2aa;
-            }
-
             QLineEdit:focus {
-                border: 2px solid #1e90ff;
+                border: 1px solid #5b9bd5;
             }
         """)
 
@@ -81,10 +79,10 @@ class TextItem(QWidget):
 
         self.text_edit = QTextEdit()
         self.text_edit.setPlaceholderText(placeholder)
+        self.text_edit.setStyleSheet("QTextEdit { color: #111111; background-color: #ffffff; border: none; }")
 
         self.frame = QFrame()
-        self.frame.setStyleSheet(self._get_style(normal=True))
-        self.frame.setMouseTracking(True)
+        self.frame.setStyleSheet(self._get_style())
 
         frame_layout = QVBoxLayout(self.frame)
         frame_layout.setContentsMargins(2, 2, 2, 2)
@@ -96,26 +94,17 @@ class TextItem(QWidget):
 
         self.text_edit.focusInEvent = self._on_focus_in
         self.text_edit.focusOutEvent = self._on_focus_out
-        self.frame.enterEvent = self._on_hover_in
-        self.frame.leaveEvent = self._on_hover_out
 
-        self._is_hover = False
         self._is_focus = False
 
-    def _get_style(self, normal=False, hover=False, focus=False):
-        border_color = "#444"
-        border_width = "1px"
-        if hover:
-            border_color = "#20b2aa"
+    def _get_style(self, focus=False):
+        border_color = "#9e9e9e"
         if focus:
-            border_color = "#1e90ff"
-            border_width = "2px"
-
+            border_color = "#5b9bd5"
         return f"""
             QFrame {{
-                border: {border_width} solid {border_color};
-                border-radius: 5px;
-                padding: 5px;
+                border: 1px solid {border_color};
+                border-radius: 2px;
                 background-color: #ffffff;
             }}
         """
@@ -130,18 +119,8 @@ class TextItem(QWidget):
         self._update_style()
         QTextEdit.focusOutEvent(self.text_edit, event)
 
-    def _on_hover_in(self, event):
-        self._is_hover = True
-        self._update_style()
-        QWidget.enterEvent(self.frame, event)
-
-    def _on_hover_out(self, event):
-        self._is_hover = False
-        self._update_style()
-        QWidget.leaveEvent(self.frame, event)
-
     def _update_style(self):
-        self.frame.setStyleSheet(self._get_style(hover=self._is_hover, focus=self._is_focus))
+        self.frame.setStyleSheet(self._get_style(focus=self._is_focus))
 
     def text(self):
         return self.text_edit.toPlainText()
