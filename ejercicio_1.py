@@ -1,7 +1,14 @@
-"""Punto de entrada de la aplicación de consola CRUD."""
+"""Punto de entrada de la aplicación gráfica CRUD de artículos."""
 
-from menu import menu
+import sys
+
+from PyQt6.QtWidgets import QApplication
+
+from ui_articulos_app import ArticulosApp
 
 
 if __name__ == "__main__":
-    menu()
+    app = QApplication(sys.argv)
+    ventana = ArticulosApp()
+    ventana.show()
+    sys.exit(app.exec())
