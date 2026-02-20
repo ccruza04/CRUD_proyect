@@ -1,0 +1,29 @@
+- Versión aprende.
+Muestra un ejemplo de colocación de widgets
+
+- Versión 01.
+Crea un proyecto que muestra tres paneles en un QVBoxLayout
+
+- Versión 02.
+Configura el panel menu (v02)
+    Se añaden los botones y se prueba la funcionalidad
+
+- Versión 03.
+Se configura el panel central (paneles nuevo...) y se configura los cambios de panel
+
+- Versión 04.
+se configura el el panel nuevo. Se crean los widgets del panel nuevo y la funcion guardar (sin guardar todavia)
+
+- Versión 05.
+Se reonfigura el panel nuevo separando la funcionalidad en la clase ui_nuevo_articulo.
+Se personalizan los widgets básicos en el módulo ui_components
+
+- Versión 06.
+Se crea la clase ArticulosDao para gestionar el fichero articulos.
+Se establece la funcionalidad de guardar aplicada a ArticulosDao
+
+- Versión 07.
+Se crea la opción consulta
+
+- Versión 07-aprende.
+Para entender mejor la versión v07 se simplifica el código quitandole los estilos de las clases UINuevoArticulo y UIConsultaArticulo
