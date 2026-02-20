@@ -83,18 +83,22 @@ class ArticulosApp(QWidget):
 
     def opcion_nuevo(self) -> None:
         self.panel_status.setText("Pestaña: Nuevo")
+        self.panel_nuevo.actualizar_completer()
         self.panel_central.setCurrentIndex(0)
 
     def opcion_consulta(self) -> None:
         self.panel_status.setText("Pestaña: Consulta")
+        self.panel_consulta.actualizar_completer()
         self.panel_central.setCurrentIndex(1)
 
     def opcion_baja(self) -> None:
         self.panel_status.setText("Pestaña: Baja")
+        self.panel_baja.actualizar_completer()
         self.panel_central.setCurrentIndex(2)
 
     def opcion_edita(self) -> None:
         self.panel_status.setText("Pestaña: Edición")
+        self.panel_edita.actualizar_completer()
         self.panel_central.setCurrentIndex(3)
 
     def opcion_listado(self) -> None:

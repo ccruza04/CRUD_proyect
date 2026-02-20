@@ -103,3 +103,7 @@ class ArticulosDao:
         if not actualizado:
             return False
         return self._save_all(articulos)
+
+
+    def get_referencias(self) -> list:
+        return [a.get("referencia", "") for a in self.get_all() if a.get("referencia", "")]

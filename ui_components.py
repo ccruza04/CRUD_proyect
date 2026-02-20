@@ -1,4 +1,15 @@
+from PyQt6.QtCore import Qt
+from PyQt6.QtGui import QIcon
 from PyQt6.QtWidgets import QPushButton, QLabel, QLineEdit, QTextEdit, QFrame, QVBoxLayout, QWidget
+
+
+def aplicar_candado(widget):
+    """Añade un icono de candado y cursor de solo lectura en QLineEdit."""
+    if isinstance(widget, QLineEdit):
+        icon = QIcon.fromTheme("object-locked")
+        if not icon.isNull():
+            widget.addAction(icon, QLineEdit.ActionPosition.TrailingPosition)
+        widget.setCursor(Qt.CursorShape.ArrowCursor)
 
 
 class BotonMenu(QPushButton):
@@ -12,9 +23,7 @@ class BotonMenu(QPushButton):
                 padding: 6px 10px;
                 border-radius: 3px;
             }
-            QPushButton:hover {
-                background-color: #e8e8e8;
-            }
+            QPushButton:hover { background-color: #e8e8e8; }
             QPushButton:pressed {
                 background-color: #dcdcdc;
                 border: 1px solid #7e7e7e;
@@ -33,9 +42,7 @@ class BotonAction(QPushButton):
                 padding: 6px 10px;
                 border-radius: 3px;
             }
-            QPushButton:hover {
-                background-color: #dce7f8;
-            }
+            QPushButton:hover { background-color: #dce7f8; }
             QPushButton:pressed {
                 background-color: #cfdcf3;
                 border: 1px solid #7b96c3;
@@ -67,16 +74,13 @@ class EditItem(QLineEdit):
                 padding: 5px;
                 border-radius: 2px;
             }
-            QLineEdit:focus {
-                border: 1px solid #5b9bd5;
-            }
+            QLineEdit:focus { border: 1px solid #5b9bd5; }
         """)
 
 
 class TextItem(QWidget):
     def __init__(self, parent=None, placeholder=""):
         super().__init__(parent)
-
         self.text_edit = QTextEdit()
         self.text_edit.setPlaceholderText(placeholder)
         self.text_edit.setStyleSheet("QTextEdit { color: #111111; background-color: #ffffff; border: none; }")
@@ -94,13 +98,10 @@ class TextItem(QWidget):
 
         self.text_edit.focusInEvent = self._on_focus_in
         self.text_edit.focusOutEvent = self._on_focus_out
-
         self._is_focus = False
 
     def _get_style(self, focus=False):
-        border_color = "#9e9e9e"
-        if focus:
-            border_color = "#5b9bd5"
+        border_color = "#5b9bd5" if focus else "#9e9e9e"
         return f"""
             QFrame {{
                 border: 1px solid {border_color};
@@ -136,3 +137,6 @@ class TextItem(QWidget):
 
     def setDisabled(self, disabled):
         self.text_edit.setDisabled(disabled)
+
+    def setReadOnly(self, value):
+        self.text_edit.setReadOnly(value)
