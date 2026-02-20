@@ -1,171 +1,107 @@
-"""Interfaz gráfica PyQt6 para la gestión de artículos."""
+import sys
 
-from PyQt6.QtWidgets import (
-    QWidget,
-    QVBoxLayout,
-    QHBoxLayout,
-    QLabel,
-    QLineEdit,
-    QTextEdit,
-    QPushButton,
-    QTableWidget,
-    QTableWidgetItem,
-    QMessageBox,
-    QHeaderView,
-)
+from PyQt6.QtWidgets import QWidget, QApplication, QVBoxLayout, QHBoxLayout, QStackedWidget, QLabel
 
-from servicio_articulos import alta_articulo, baja_articulo, modificar_articulo, listar_articulos
+from articulos_dao import ArticulosDao
+from ui_components import BotonMenu
+from ui_nuevo_articulo import UINuevoArticulo
+from ui_consulta_articulo import UIConsultaArticulo
+from ui_baja_articulo import UIBajaArticulo
+from ui_edita_articulo import UIEditaArticulo
+from ui_listado_articulos import UIListadoArticulos
 
 
 class ArticulosApp(QWidget):
-    """Ventana principal del CRUD de artículos."""
-
     def __init__(self):
         super().__init__()
-        self._configurar_ui()
-        self._cargar_tabla()
+        self.articulos_dao = ArticulosDao()
+        self.config_ui()
 
-    def _configurar_ui(self):
-        self.setWindowTitle("CRUD de Artículos - PyQt6")
-        self.resize(900, 600)
+    def config_ui(self) -> None:
+        self.setWindowTitle("Gestión de Artículos")
+        self.resize(800, 550)
 
-        layout_principal = QVBoxLayout(self)
+        layout = QVBoxLayout(self)
+        layout.setContentsMargins(0, 0, 0, 0)
+        layout.setSpacing(0)
 
-        titulo = QLabel("Gestión de Artículos")
-        titulo.setStyleSheet("font-size: 20px; font-weight: bold;")
-        layout_principal.addWidget(titulo)
+        self.panel_menu = QWidget(self)
+        layout.addWidget(self.panel_menu)
+        self.panel_menu.setStyleSheet("background-color: #AA0000;")
+        self.panel_menu.setFixedHeight(50)
 
-        formulario = QVBoxLayout()
+        self.panel_central = QStackedWidget(self)
+        layout.addWidget(self.panel_central)
+        self.panel_central.setStyleSheet("background-color: #e8ffff;")
 
-        fila_referencia = QHBoxLayout()
-        fila_referencia.addWidget(QLabel("Referencia:"))
-        self.txt_referencia = QLineEdit()
-        self.txt_referencia.setPlaceholderText("Ejemplo: REF001")
-        fila_referencia.addWidget(self.txt_referencia)
-        formulario.addLayout(fila_referencia)
+        self.panel_status = QLabel("Aplicación iniciada")
+        layout.addWidget(self.panel_status)
+        self.panel_status.setStyleSheet("background-color: #00AA00; color: #ffffff; padding: 8px;")
 
-        fila_descripcion = QHBoxLayout()
-        fila_descripcion.addWidget(QLabel("Descripción:"))
-        self.txt_descripcion = QLineEdit()
-        fila_descripcion.addWidget(self.txt_descripcion)
-        formulario.addLayout(fila_descripcion)
+        self.crear_menu()
 
-        fila_precio = QHBoxLayout()
-        fila_precio.addWidget(QLabel("Precio:"))
-        self.txt_precio = QLineEdit()
-        self.txt_precio.setPlaceholderText("Ejemplo: 59.99")
-        fila_precio.addWidget(self.txt_precio)
-        formulario.addLayout(fila_precio)
+        self.panel_nuevo = UINuevoArticulo(self.panel_central, self.articulos_dao)
+        self.panel_consulta = UIConsultaArticulo(self.panel_central, self.articulos_dao)
+        self.panel_baja = UIBajaArticulo(self.panel_central, self.articulos_dao)
+        self.panel_edita = UIEditaArticulo(self.panel_central, self.articulos_dao)
+        self.panel_listado = UIListadoArticulos(self.panel_central, self.articulos_dao)
 
-        fila_stock = QHBoxLayout()
-        fila_stock.addWidget(QLabel("Stock:"))
-        self.txt_stock = QLineEdit()
-        self.txt_stock.setPlaceholderText("Ejemplo: 10")
-        fila_stock.addWidget(self.txt_stock)
-        formulario.addLayout(fila_stock)
+        self.panel_central.setCurrentIndex(0)
 
-        fila_observaciones = QHBoxLayout()
-        fila_observaciones.addWidget(QLabel("Observaciones:"))
-        self.txt_observaciones = QTextEdit()
-        self.txt_observaciones.setFixedHeight(70)
-        fila_observaciones.addWidget(self.txt_observaciones)
-        formulario.addLayout(fila_observaciones)
+    def crear_menu(self) -> None:
+        layout = QHBoxLayout(self.panel_menu)
 
-        layout_principal.addLayout(formulario)
+        self.boton_nuevo = BotonMenu("Nuevo")
+        self.boton_nuevo.clicked.connect(self.opcion_nuevo)
+        layout.addWidget(self.boton_nuevo)
 
-        fila_botones = QHBoxLayout()
-        self.btn_alta = QPushButton("Alta")
-        self.btn_baja = QPushButton("Baja")
-        self.btn_modificar = QPushButton("Modificar")
-        self.btn_listar = QPushButton("Listar")
-        self.btn_limpiar = QPushButton("Limpiar")
+        self.boton_consulta = BotonMenu("Consulta")
+        self.boton_consulta.clicked.connect(self.opcion_consulta)
+        layout.addWidget(self.boton_consulta)
 
-        fila_botones.addWidget(self.btn_alta)
-        fila_botones.addWidget(self.btn_baja)
-        fila_botones.addWidget(self.btn_modificar)
-        fila_botones.addWidget(self.btn_listar)
-        fila_botones.addWidget(self.btn_limpiar)
+        self.boton_baja = BotonMenu("Baja")
+        self.boton_baja.clicked.connect(self.opcion_baja)
+        layout.addWidget(self.boton_baja)
 
-        layout_principal.addLayout(fila_botones)
+        self.boton_edita = BotonMenu("Edición")
+        self.boton_edita.clicked.connect(self.opcion_edita)
+        layout.addWidget(self.boton_edita)
 
-        self.tabla = QTableWidget()
-        self.tabla.setColumnCount(5)
-        self.tabla.setHorizontalHeaderLabels(["Referencia", "Descripción", "Precio", "Stock", "Observaciones"])
-        self.tabla.horizontalHeader().setSectionResizeMode(1, QHeaderView.ResizeMode.Stretch)
-        self.tabla.horizontalHeader().setSectionResizeMode(4, QHeaderView.ResizeMode.Stretch)
-        layout_principal.addWidget(self.tabla)
+        self.boton_listado = BotonMenu("Listado")
+        self.boton_listado.clicked.connect(self.opcion_listado)
+        layout.addWidget(self.boton_listado)
 
-        self.lbl_estado = QLabel("Listo.")
-        self.lbl_estado.setStyleSheet("padding: 6px; background-color: #f0f0f0;")
-        layout_principal.addWidget(self.lbl_estado)
+        self.boton_salir = BotonMenu("Salir")
+        self.boton_salir.clicked.connect(self.opcion_cerrar_app)
+        layout.addWidget(self.boton_salir)
 
-        self.btn_alta.clicked.connect(self._accion_alta)
-        self.btn_baja.clicked.connect(self._accion_baja)
-        self.btn_modificar.clicked.connect(self._accion_modificar)
-        self.btn_listar.clicked.connect(self._cargar_tabla)
-        self.btn_limpiar.clicked.connect(self._limpiar_campos)
-        self.tabla.cellClicked.connect(self._cargar_desde_fila)
+    def opcion_nuevo(self) -> None:
+        self.panel_status.setText("Pestaña: Nuevo")
+        self.panel_central.setCurrentIndex(0)
 
-    def _datos_formulario(self):
-        return (
-            self.txt_referencia.text(),
-            self.txt_descripcion.text(),
-            self.txt_precio.text(),
-            self.txt_stock.text(),
-            self.txt_observaciones.toPlainText(),
-        )
+    def opcion_consulta(self) -> None:
+        self.panel_status.setText("Pestaña: Consulta")
+        self.panel_central.setCurrentIndex(1)
 
-    def _mostrar_mensaje(self, titulo, texto, error=False):
-        self.lbl_estado.setText(texto)
-        if error:
-            QMessageBox.warning(self, titulo, texto)
-        else:
-            QMessageBox.information(self, titulo, texto)
+    def opcion_baja(self) -> None:
+        self.panel_status.setText("Pestaña: Baja")
+        self.panel_central.setCurrentIndex(2)
 
-    def _accion_alta(self):
-        ok, mensaje = alta_articulo(*self._datos_formulario())
-        self._mostrar_mensaje("Alta de artículo", mensaje, error=not ok)
-        if ok:
-            self._cargar_tabla()
-            self._limpiar_campos()
+    def opcion_edita(self) -> None:
+        self.panel_status.setText("Pestaña: Edición")
+        self.panel_central.setCurrentIndex(3)
 
-    def _accion_baja(self):
-        referencia = self.txt_referencia.text()
-        ok, mensaje = baja_articulo(referencia)
-        self._mostrar_mensaje("Baja de artículo", mensaje, error=not ok)
-        if ok:
-            self._cargar_tabla()
-            self._limpiar_campos()
+    def opcion_listado(self) -> None:
+        self.panel_status.setText("Pestaña: Listado")
+        self.panel_listado.listar()
+        self.panel_central.setCurrentIndex(4)
 
-    def _accion_modificar(self):
-        ok, mensaje = modificar_articulo(*self._datos_formulario())
-        self._mostrar_mensaje("Modificación de artículo", mensaje, error=not ok)
-        if ok:
-            self._cargar_tabla()
+    def opcion_cerrar_app(self) -> None:
+        QApplication.quit()
 
-    def _cargar_tabla(self):
-        articulos = listar_articulos()
-        self.tabla.setRowCount(len(articulos))
 
-        for fila, articulo in enumerate(articulos):
-            self.tabla.setItem(fila, 0, QTableWidgetItem(articulo.referencia))
-            self.tabla.setItem(fila, 1, QTableWidgetItem(articulo.descripcion))
-            self.tabla.setItem(fila, 2, QTableWidgetItem(f"{articulo.precio:.2f}"))
-            self.tabla.setItem(fila, 3, QTableWidgetItem(str(articulo.stock)))
-            self.tabla.setItem(fila, 4, QTableWidgetItem(articulo.observaciones))
-
-        self.lbl_estado.setText(f"Artículos cargados: {len(articulos)}")
-
-    def _cargar_desde_fila(self, fila, _columna):
-        self.txt_referencia.setText(self.tabla.item(fila, 0).text())
-        self.txt_descripcion.setText(self.tabla.item(fila, 1).text())
-        self.txt_precio.setText(self.tabla.item(fila, 2).text())
-        self.txt_stock.setText(self.tabla.item(fila, 3).text())
-        self.txt_observaciones.setText(self.tabla.item(fila, 4).text())
-
-    def _limpiar_campos(self):
-        self.txt_referencia.clear()
-        self.txt_descripcion.clear()
-        self.txt_precio.clear()
-        self.txt_stock.clear()
-        self.txt_observaciones.clear()
+if __name__ == "__main__":
+    app = QApplication(sys.argv)
+    ventana = ArticulosApp()
+    ventana.show()
+    sys.exit(app.exec())
