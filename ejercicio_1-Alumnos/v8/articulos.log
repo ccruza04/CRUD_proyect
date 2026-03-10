@@ -4,8 +4,3 @@
 2026-02-09 09:33:57,546 - ERROR - Error al buscar artículo : list index out of range
 2026-02-09 09:34:23,765 - ERROR - Error al buscar artículo : list index out of range
 2026-02-09 09:51:08,706 - ERROR - Error al buscar artículo : list index out of range
-2026-02-09 10:36:49,226 - ERROR - Error al buscar artículo : list index out of range
-2026-03-05 20:09:54,372 - INFO - ConexiÃ³n realizada con Ã©xito
-2026-03-05 20:10:15,025 - ERROR - UNIQUE constraint failed: articulos.referencia
-2026-03-05 20:12:30,083 - INFO - ConexiÃ³n realizada con Ã©xito
-2026-03-10 19:12:05,854 - INFO - ConexiÃ³n realizada con Ã©xito

@@ -1,11 +1,9 @@
-from PyQt6.QtCore import Qt
 from PyQt6.QtWidgets import (
-    QWidget, QVBoxLayout, QPushButton,
-    QStackedWidget, QLabel, QLineEdit, QFrame, QTextEdit, QFormLayout, QMessageBox
+    QWidget, QVBoxLayout, QStackedWidget, QFrame, QFormLayout, QMessageBox
 )
 
-from ui_components import LabelTitulo, LabelItem, EditItem, TextItem, BotonAction
-from articulos_dao import ArticulosDao
+from ZZZ.ui_components import LabelTitulo, LabelItem, EditItem, TextItem, BotonAction
+from ZZZ.articulos_dao import ArticulosDao
 
 class UINuevoArticulo(QWidget):
     """

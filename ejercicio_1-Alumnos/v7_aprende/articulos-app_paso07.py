@@ -2,10 +2,10 @@ import sys
 
 from PyQt6.QtWidgets import QWidget, QApplication, QVBoxLayout, QHBoxLayout, QStackedWidget, QLabel
 
-from articulos_dao import ArticulosDao
-from ui_components import BotonMenu
-from ui_nuevo_articulo import UINuevoArticulo
-from ui_consulta_articulo import UIConsultaArticulo
+from ZZZ.articulos_dao import ArticulosDao
+from ZZZ.ui_components import BotonMenu
+from ZZZ.ui_nuevo_articulo import UINuevoArticulo
+from ZZZ.ui_consulta_articulo import UIConsultaArticulo
 
 class ArticulosApp(QWidget):
     """
